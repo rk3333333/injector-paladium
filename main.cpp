@@ -11,18 +11,17 @@
 
 int main(int argc, const char* argv[])
 {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(ProcessSelector::get_window_contains_name("Paladium"), &pid);
+    Process process{ pid };
+    if (!process)
+    {
+        std::cerr << "[-] Failed to open target process\n";
+        return -1;
+    }
 
-	DWORD pid = ProcessSelector::ask_pid();
+    Injector injector(process);
+    injector.inject((uint8_t*)dll_dll.data(), dll_dll.size());
 
-	Process process{ pid };
-	if (!process)
-	{
-		std::cerr << "[-] Failed to open target process\n";
-		return -1;
-	}
-
-	Injector injector(process);
-	injector.inject((uint8_t*)dll_dll.data(), dll_dll.size());
-
-	return 0;
+    return 0;
 }
