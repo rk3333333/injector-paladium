@@ -113,6 +113,13 @@ namespace
 	}
 }
 
+HWND ProcessSelector::get_window_contains_name(const char* window_name)
+{
+	WindowInfo info{ .pattern_to_find = window_name, .found_hwnd = nullptr };
+	EnumWindows(&EnumWindowsCallback2, (LPARAM)&info);
+	return info.found_hwnd;
+}
+
 DWORD ProcessSelector::ask_pid()
 {
 	while (true)
